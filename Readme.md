@@ -110,9 +110,9 @@ We define 3 tasks with increasing difficulty:
 
 ## 📈 Baseline Results
 
-- Easy → ~0.75
-- Medium → ~0.30
-- Hard → ~0.10
+- Easy → ~0.77
+- Medium → ~0.32
+- Hard → ~0.12
 
 ### Interpretation
 
