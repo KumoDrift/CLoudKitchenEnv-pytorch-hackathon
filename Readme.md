@@ -55,7 +55,7 @@ Each step returns:
 
 The agent provides assignments of **order_id → slot_id**
 
-Example:
+### Example
 
 ```python
 Action(assignments=[
@@ -63,93 +63,114 @@ Action(assignments=[
 ])
 ```
 
-### 🔄 Design Note
+---
+
+## 🔄 Design Note
 
 Initially, the environment supported explicit manual assignment of orders to slots.
 
 In the current version, the baseline agent automates this process using a scheduling strategy:
 
-When a slot becomes free, the agent automatically selects an order
-Orders are chosen based on Earliest Deadline First (EDF)
+- When a slot becomes free, the agent automatically selects an order
+- Orders are chosen based on **Earliest Deadline First (EDF)**
 
 👉 This reflects a more realistic system where decisions are made dynamically rather than manually.
 
-### 🏆 Reward Function
+---
+
+## 🏆 Reward Function
 
 The reward system reflects operational efficiency:
 
 ### ✅ Positive Rewards
 
-- Full reward → order completed before deadline
-- Partial reward → order completed slightly late
+- Full reward → Order completed before deadline
+- Partial reward → Order completed slightly late
 
 ### ❌ Penalties
 
-- Late completion → reduced or negative reward
-- Idle cooking slot → penalty (unused resource)
+- Late completion → Reduced or negative reward
+- Idle cooking slot → Penalty (unused resource)
 
 👉 This encourages the agent to **keep slots busy** and **prioritize timely deliveries**
 
-### 📊 Tasks & Difficulty Levels
+---
+
+## 📊 Tasks & Difficulty Levels
 
 We define 3 tasks with increasing difficulty:
 
-Task Description
-🟢 Easy----------> Sufficient resources, relaxed constraints
-🟡 Medium ------->Tighter deadlines, fewer slots
-🔴 Hard----------> High pressure, extra orders, strict deadlines
+| Task      | Description                                   |
+| --------- | --------------------------------------------- |
+| 🟢 Easy   | Sufficient resources, relaxed constraints     |
+| 🟡 Medium | Tighter deadlines, fewer slots                |
+| 🔴 Hard   | High pressure, extra orders, strict deadlines |
 
-### 📈 Baseline Results
+---
 
-Easy : ~0.75
-Medium : ~0.30
-Hard : ~0.10
+## 📈 Baseline Results
 
-## Interpretation
+- Easy → ~0.75
+- Medium → ~0.30
+- Hard → ~0.10
+
+### Interpretation
 
 - Agent performs well in simple settings
 - Performance drops under constraints
 - Demonstrates increasing task complexity
 
+---
+
 ## ✅ Key Features
 
-✔ Real-world task (cloud kitchen scheduling)
-✔ OpenEnv-compatible API
-✔ Typed models using Pydantic
-✔ Multi-task evaluation system
-✔ Continuous reward shaping
-✔ Reproducible baseline results
-✔ Dockerized for deployment
+- ✔ Real-world task (cloud kitchen scheduling)
+- ✔ OpenEnv-compatible API
+- ✔ Typed models using Pydantic
+- ✔ Multi-task evaluation system
+- ✔ Continuous reward shaping
+- ✔ Reproducible baseline results
+- ✔ Dockerized for deployment
 
-### ⚙️ Setup Instructions
+---
 
-## 1. Clone repository
+## ⚙️ Setup Instructions
 
-```git clone <your-repo-link>
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/KumoDrift/CLoudKitchenEnv-pytorch-hackathon
 cd cloud-kitchen-env
 ```
 
-## 2. Install dependencies
+### 2. Install Dependencies
 
-```pip install -r requirements.txt
-
+```bash
+pip install -r requirements.txt
 ```
+
+---
 
 ## ▶️ Run Baseline
 
-```python baseline.py
-
+```bash
+python baseline.py
 ```
+
+---
 
 ## 🐳 Docker Support
 
 Build and run:
 
-```docker build -t cloud-kitchen-env .
+```bash
+docker build -t cloud-kitchen-env .
 docker run cloud-kitchen-env
 ```
 
+---
+
 ## 👨‍💻 Author
 
-KumoDrift
+**KumoDrift**  
 Cloud Kitchen RL Environment Project
