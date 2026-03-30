@@ -1,0 +1,59 @@
+id: cloud-kitchen-env
+name: Cloud Kitchen Order Scheduling Environment
+
+description: >
+  A real-world simulation of a cloud kitchen where an AI agent must assign food orders
+  to limited cooking slots (stoves) while managing deadlines, cooking times, and maximizing revenue.
+  The agent must balance urgency vs value under resource constraints.
+
+version: 1.0.0
+
+entry_point: env.environment:CloudKitchenEnv
+
+max_steps: 20
+
+observation_space:
+  description: >
+    Current state of the kitchen including time, pending orders, and slot status.
+  fields:
+    current_time: int
+    orders: list
+    slots: list
+
+action_space:
+  description: >
+    Assign orders to cooking slots.
+  fields:
+    assignments:
+      type: list
+      description: List of slot_id → order_id mappings
+
+reward:
+  description: >
+    Reward is given for completing orders. Full reward if completed before deadline,
+    partial reward if slightly late, and penalty if too late. Additional penalties
+    for idle slots and inefficient behavior.
+
+tasks:
+  - id: easy
+    description: >
+      Standard environment with moderate deadlines and 2 cooking slots.
+    difficulty: easy
+
+  - id: medium
+    description: >
+      Reduced deadlines and limited cooking slots, requiring better prioritization.
+    difficulty: medium
+
+  - id: hard
+    description: >
+      Tight deadlines, fewer resources, and additional orders creating heavy scheduling pressure.
+    difficulty: hard
+
+author: your-name
+license: MIT
+tags:
+  - reinforcement-learning
+  - scheduling
+  - real-world
+  - cloud-kitchen
