@@ -122,12 +122,6 @@ We define 3 tasks with increasing difficulty:
 
 ---
 
-## 📈 Baseline Results
-
-- Easy → ~0.77
-- Medium → ~0.32
-- Hard → ~0.12
-
 ### Interpretation
 
 - Agent performs well in simple settings
