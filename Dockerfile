@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Install dependencies
-RUN pip install --no-cache-dir pydantic
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Run baseline script by default
-CMD ["python", "baseline.py"]
+# Expose port for FastAPI
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
