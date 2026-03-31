@@ -6,7 +6,7 @@ from agent import simple_agent
 # RUN ONE FULL EPISODE
 # -----------------------------
 def run_episode(env):
-    obs = env.state()    # i got a problem here i was resetting the env in each task and thinking why my agent is not learning, but then i realized that the env is reset in each task, so the agent is not learning from previous tasks, so i change  the reset into state,so using current state, now the agent can learn from previous tasks and improve its performance in the next tasks.
+    obs = env.reset()  # initial observation with all orders and resources
     total_reward = 0
 
     done = False
