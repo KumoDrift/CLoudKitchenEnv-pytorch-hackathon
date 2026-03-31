@@ -1,3 +1,12 @@
+---
+title: Cloud Kitchen Environment
+emoji: 🍳
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+---
+
 # 🍳 Cloud Kitchen Scheduling Environment (OpenEnv)
 
 ## 🚀 Overview
@@ -15,31 +24,22 @@ The goal is to **maximize total reward** by completing high-value orders on time
 
 ---
 
-## 🎯 Motivation
-
-Unlike toy problems or games, this environment models a **real operational challenge** faced by cloud kitchens:
-
-> "How do you prioritize and schedule orders when resources are limited and deadlines matter?"
-
-This introduces real-world complexities like:
-
-- Trade-offs between **speed vs value**
-- Resource contention (limited slots)
-- Time-sensitive decision making
-
----
-
 ## 🧠 Environment Design
 
-The environment follows a standard **OpenEnv-style API**:
+The environment follows a standard **OpenEnv-style API** implemented as a FastAPI app.
 
-### Core Methods
+### Core Endpoints
+
+- `POST /reset` → Initializes the environment and returns the initial observation
+- `POST /step` → Executes an agent action and returns observation, reward, done, info
+- `GET /state` → Returns the current environment state
+- `GET /` → Health check (returns "Cloud Kitchen Env running 🚀")
+
+### Core Methods (Backend)
 
 - `reset()` → Initializes environment
 - `step(action)` → Executes agent action
 - `state()` → Returns current observation
-
----
 
 ## 📥 Observation Space
 
@@ -75,6 +75,20 @@ In the current version, the baseline agent automates this process using a schedu
 - Orders are chosen based on **Earliest Deadline First (EDF)**
 
 👉 This reflects a more realistic system where decisions are made dynamically rather than manually.
+
+---
+
+## 🎯 Motivation
+
+Unlike toy problems or games, this environment models a **real operational challenge** faced by cloud kitchens:
+
+> "How do you prioritize and schedule orders when resources are limited and deadlines matter?"
+
+This introduces real-world complexities like:
+
+- Trade-offs between **speed vs value**
+- Resource contention (limited slots)
+- Time-sensitive decision making
 
 ---
 
@@ -151,10 +165,10 @@ pip install -r requirements.txt
 
 ---
 
-## ▶️ Run Baseline
+## ▶️ Run Inference
 
 ```bash
-python baseline.py
+python inference.py
 ```
 
 ---
@@ -165,7 +179,7 @@ Build and run:
 
 ```bash
 docker build -t cloud-kitchen-env .
-docker run cloud-kitchen-env
+docker run -p 7860:7860 cloud-kitchen-env
 ```
 
 ---
