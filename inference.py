@@ -1,7 +1,68 @@
+print("🔥 inference.py started")
+import os
+from openai import OpenAI
 from tasks import task_easy, task_medium, task_hard
 
 
-def run_baseline():
+# -----------------------------
+# ENV VARIABLES (REQUIRED)
+# -----------------------------
+API_BASE_URL = os.getenv("API_BASE_URL")
+API_KEY = os.getenv("HF_TOKEN")
+MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
+
+
+# -----------------------------
+# INIT CLIENT (SAFE)
+# -----------------------------
+client = None
+if API_BASE_URL and API_KEY:
+    try:
+        client = OpenAI(
+            base_url=API_BASE_URL,
+            api_key=API_KEY
+        )
+    except Exception:
+        client = None
+
+
+# -----------------------------
+# OPTIONAL LLM INTERPRETATION
+# -----------------------------
+def interpret_results(easy, medium, hard, avg):
+    if client is None:
+        return "LLM interpretation skipped (no API configuration).Falling back to rule-based evaluation."
+
+    try:
+        prompt = f"""
+Interpret these reinforcement learning environment results:
+
+Easy: {easy:.2f}
+Medium: {medium:.2f}
+Hard: {hard:.2f}
+Average: {avg:.2f}
+
+Give a short, insightful summary.
+"""
+
+        response = client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=100,
+            temperature=0.3,
+        )
+
+        return response.choices[0].message.content.strip()
+
+    except Exception:
+        return "LLM interpretation unavailable due to API error. "
+
+
+# -----------------------------
+# MAIN EXECUTION
+# -----------------------------
+def main():
+    print("🔥 inside main()")
     print("\n" + "="*60)
     print(" CLOUD KITCHEN ENVIRONMENT - BASELINE EVALUATION")
     print("="*60)
@@ -9,13 +70,13 @@ def run_baseline():
     print("\nRunning tasks...\n")
 
     easy = task_easy()
-    print(f"[Easy Task   ] Score: {easy:.2f}  -> Basic scheduling with sufficient resources")
+    print(f"[Easy Task   ] Score: {easy:.2f}")
 
     medium = task_medium()
-    print(f"[Medium Task ] Score: {medium:.2f}  -> Tighter deadlines, limited resources")
+    print(f"[Medium Task ] Score: {medium:.2f}")
 
     hard = task_hard()
-    print(f"[Hard Task   ] Score: {hard:.2f}  -> High pressure, extra orders, strict constraints")
+    print(f"[Hard Task   ] Score: {hard:.2f}")
 
     avg = (easy + medium + hard) / 3
 
@@ -26,23 +87,21 @@ def run_baseline():
     print(f"Easy   : {easy:.2f}")
     print(f"Medium : {medium:.2f}")
     print(f"Hard   : {hard:.2f}")
-    print(f"\nAverage Score: {avg:.2f}")
+    print(f"Average: {avg:.2f}")
 
     print("\n" + "-"*60)
-    print(" INTERPRETATION")
+    print(" LLM INTERPRETATION")
     print("-"*60)
 
-    print("Higher score = better performance")
-    print("Lower score = more challenging environment")
+    interpretation = interpret_results(easy, medium, hard, avg)
+    print(interpretation)
 
-    print("\nThis shows how the agent performs under increasing difficulty levels.")
-    print("The environment introduces real-world constraints like deadlines,")
-    print("limited cooking slots, and reward trade-offs.")
-
-    print("="*60)
     print("\n" + "="*60)
     print("Author: Monu Mandal | Cloud Kitchen RL Environment")
+    print("="*60)
 
 
 if __name__ == "__main__":
-    run_baseline()
+    main()
+
+    
