@@ -78,6 +78,143 @@ In the current version, the baseline agent automates this process using a schedu
 
 ---
 
+## 🔗 Base URL
+
+https://ichi-goat7-cloud-kitchen-env.hf.space
+
+---
+
+## 🔄 1. Reset Environment
+
+### Endpoint
+
+POST /reset
+
+### Description
+
+Resets the environment to the initial state.
+
+### Request
+
+No body required.
+
+### Example (PowerShell)
+
+    Invoke-RestMethod `
+    -Uri "https://ichi-goat7-cloud-kitchen-env.hf.space/reset" `
+    -Method POST
+
+### Example (curl)
+
+    curl -X POST https://ichi-goat7-cloud-kitchen-env.hf.space/reset
+
+### Response
+
+    {
+      "current_time": 0,
+      "orders": [...],
+      "slots": [...]
+    }
+
+---
+
+## ⚡ 2. Take a Step
+
+### Endpoint
+
+POST /step
+
+### Description
+
+Executes one environment step using the provided action.
+
+### Request Payload
+
+    {
+      "assignments": [
+        {
+          "slot_id": 1,
+          "order_id": 1
+        }
+      ]
+    }
+
+### Example (PowerShell)
+
+    Invoke-RestMethod `
+    -Uri "https://ichi-goat7-cloud-kitchen-env.hf.space/step" `
+    -Method POST `
+    -Body '{"assignments":[{"slot_id":1,"order_id":1}]}' `
+    -ContentType "application/json"
+
+### Example (curl)
+
+    curl -X POST https://ichi-goat7-cloud-kitchen-env.hf.space/step \
+    -H "Content-Type: application/json" \
+    -d '{"assignments":[{"slot_id":1,"order_id":1}]}'
+
+### Response
+
+    {
+      "observation": {
+        "current_time": 1,
+        "orders": [...],
+        "slots": [...]
+      },
+      "reward": 0.0,
+      "done": false,
+      "info": {
+        "events": []
+      }
+    }
+
+---
+
+## 📊 3. Get Current State
+
+### Endpoint
+
+GET /state
+
+### Description
+
+Returns the current environment state without modifying it.
+
+### Example (PowerShell)
+
+    Invoke-RestMethod `
+    -Uri "https://ichi-goat7-cloud-kitchen-env.hf.space/state"
+
+### Example (curl)
+
+    curl https://ichi-goat7-cloud-kitchen-env.hf.space/state
+
+### Response
+
+    {
+      "current_time": 0,
+      "orders": [...],
+      "slots": [...]
+    }
+
+## ✅ Action Format Summary
+
+    {
+      "assignments": [
+        { "slot_id": int, "order_id": int }
+      ]
+    }
+
+---
+
+## 🏁 Example Workflow
+
+1. POST /reset
+2. POST /step (assign orders)
+3. Repeat `/step` until `"done": true`
+
+---
+
 ## 🎯 Motivation
 
 Unlike toy problems or games, this environment models a **real operational challenge** faced by cloud kitchens:
