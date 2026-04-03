@@ -1,10 +1,34 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from env.environment import CloudKitchenEnv
 from env.models import Action
+import uvicorn
 
 app = FastAPI()
-
 env = CloudKitchenEnv()
+
+
+@app.post("/reset")
+def reset():
+    obs = env.reset()
+    return obs.model_dump()
+
+
+@app.post("/step")
+def step(action: dict):
+    act = Action(**action)
+    obs, reward, done, info = env.step(act)
+
+    return {
+        "observation": obs.model_dump(),
+        "reward": reward.value,
+        "done": done,
+        "info": info
+    }
+
+
+@app.get("/state")
+def state():
+    return env.state().model_dump()
 
 
 @app.get("/")
@@ -12,38 +36,10 @@ def home():
     return {"message": "Cloud Kitchen Env running 🚀"}
 
 
-@app.post("/reset")
-def reset():
-    try:
-        obs = env.reset()
-        return obs.model_dump()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+def main():
+    uvicorn.run("server.app:app", host="0.0.0.0", port=7860)
 
 
-@app.post("/step")
-def step(action: dict):
-    try:
-        act = Action(**action)
 
-        obs, reward, done, info = env.step(act)
-
-        return {
-            "observation": obs.model_dump(),
-            "reward": float(reward.value),
-            "done": done,
-            "info": info
-        }
-
-    except Exception as e:
-        
-        raise HTTPException(status_code=400, detail=str(e))
-
-
-@app.get("/state")
-def state():
-    try:
-        return env.state().model_dump()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
+if __name__ == "__main__":
+    main()
